@@ -1,0 +1,37 @@
+version: '3.7'
+services:
+  mysql-primary:
+    image: mysql:8.0
+    container_name: mysql-primary
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_REPLICATION_MODE: primary
+    command: --server-id=1 --log-bin=mysql-bin
+    volumes:
+      - ./setup-replication-user.sql:/var/lib/mysql
+      - mysql-primary-data:/var/lib/mysql
+    networks:
+      - mysql-cluster-net
+
+  mysql-replica:
+    image: mysql:8.0
+    container_name: mysql-replica
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_REPLICATION_MODE: replica
+      MYSQL_PRIMARY_HOST: mysql-primary
+    command: --server-id=2
+    depends_on:
+      - mysql-primary
+    volumes:
+      - mysql-replica-data:/var/lib/mysql
+    networks:
+      - mysql-cluster-net
+
+volumes:
+  mysql-primary-data:
+  mysql-replica-data:
+
+networks:
+  mysql-cluster-net:
+    driver: bridge

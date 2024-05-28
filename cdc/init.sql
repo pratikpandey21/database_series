@@ -1,0 +1,10 @@
+CREATE DATABASE IF NOT EXISTS mydb;
+
+USE mydb;
+CREATE TABLE IF NOT EXISTS mytable (
+    id INT NOT NULL PRIMARY KEY ,
+    value VARCHAR(10)
+);
+
+INSERT INTO mytable VALUES (1, 'Pratik');
+INSERT INTO mytable VALUES (2, 'Demo')
